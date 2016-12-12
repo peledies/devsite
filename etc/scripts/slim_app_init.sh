@@ -15,7 +15,7 @@ fi
 # Create new slim app using composer
 echo_start
 echo -n "${gold}Creating slim app skeleton${default}"
-  #composer create-project slim/slim-skeleton $INITDIR/www
+  composer create-project slim/slim-skeleton $INITDIR/www
 test_for_success $? 'allow'
 
 # Create new nginx server configuration
