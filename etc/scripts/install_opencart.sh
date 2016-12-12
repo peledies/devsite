@@ -69,6 +69,46 @@ server {
 EOF
 test_for_success $?
 
+# Create appropriate php container provisioner
+echo_start
+echo -n "${gold}Creating PHP7 docker container provisioner${default}"
+
+cat <<EOF > $INITDIR/etc/docker/dockerfile_php_7
+FROM php:7.0-fpm
+
+RUN apt-get update
+
+# Install mysqli
+RUN docker-php-ext-install mysqli
+
+# Install mcrypt
+RUN apt-get install -y libmcrypt-dev
+RUN docker-php-ext-install mcrypt
+
+# Install gd
+RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev
+
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+
+RUN docker-php-ext-install gd
+
+# Install zip
+RUN docker-php-ext-install zip
+
+# RUN apt-get install libssl-dev -y
+
+CMD ["php-fpm"]
+EOF
+test_for_success $?
+
+# Create database stub file
+echo_start
+echo -n "${gold}Creating database stub file${default}"
+cat <<EOF > $INITDIR/etc/mysql/$project.sql
+create database $project;
+EOF
+test_for_success $?
+
 # Remove tmp directory
 echo_start
 echo -n "${gold}Removing tmp directory${default}"
