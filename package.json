@@ -10,6 +10,8 @@
     , "docker:nuke": "npm run docker:stop; npm run docker:remove-containers; npm run docker:remove-images"
     , "docker:remove-containers": "docker-compose rm php; docker-compose rm nginx"
     , "docker:remove-images": "docker rmi $(docker images -q)"
+    , "init:slim": "etc/scripts/slim_app_init.sh $1"
+    , "init:opencart": "etc/scripts/install_opencart.sh"
   }
   , "devDependencies": {}
 }
