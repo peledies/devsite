@@ -8,10 +8,16 @@ source $SCRIPTPATH/assets/pretty_tasks.sh
 
 init_slim_app() {
   source $SCRIPTPATH/slim_app_init.sh $project
+  build_docker_containers
 }
 
 init_opencart_site() {
   source $SCRIPTPATH/install_opencart.sh $project
+  build_docker_containers
+}
+
+build_docker_containers(){
+  docker-compose build
 }
 
 # Ask the user for the existing project they want to add

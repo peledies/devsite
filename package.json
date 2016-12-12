@@ -3,7 +3,7 @@
   , "version": "0.0.1"
   , "description": "development environment for new project"
   , "scripts": {
-      "postinstall": "docker-compose build; npm run docker:start"
+      "postinstall": "etc/scripts/setup.sh"
     , "docker:start": "docker-compose up -d"
     , "docker:stop": "docker-compose stop"
     , "docker:logs": "docker-compose logs -f"
