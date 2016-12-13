@@ -63,7 +63,7 @@ RUN apt-get install -y libmcrypt-dev
 RUN docker-php-ext-install mcrypt
 
 # Install zip
-RUN docker-php-ext-install zip
+# RUN docker-php-ext-install zip
 
 # RUN apt-get install libssl-dev -y
 
