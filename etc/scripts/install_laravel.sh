@@ -58,7 +58,7 @@ test_for_success $?
 echo_start
 echo -n "${gold}Creating Environment file and APP KEY${default}"
   echo "APP_KEY=" > .env
-  php artisan key:generate
+  php artisan key:generate > /dev/null 2>&1
 test_for_success $?
 
 # Remove tmp directory
