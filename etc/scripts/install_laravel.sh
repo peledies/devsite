@@ -14,7 +14,7 @@ fi
 
 # Clone the current opencart repo
 echo_start
-echo -n "${gold}Cloning the current opencart repo${default}"
+echo -n "${gold}Creating laravel project with composer${default}"
   composer create-project --prefer-dist laravel/laravel tmp/ > /dev/null 2>&1
 test_for_success $?
 
