@@ -46,6 +46,21 @@ end
 EOF
 test_for_success $?
 
+
+# Move files from tmp directory
+echo_start
+echo -n "${gold}Updating storage and cache permissions${default}"
+  chmod 777 storage
+  chmod 777 bootstrap/cache
+test_for_success $?
+
+# Move files from tmp directory
+echo_start
+echo -n "${gold}Creating Environment file and APP KEY${default}"
+  echo "APP_KEY=" > .env
+  php artisan key:generate
+test_for_success $?
+
 # Remove tmp directory
 echo_start
 echo -n "${gold}Removing tmp directory${default}"
