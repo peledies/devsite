@@ -34,6 +34,8 @@ echo -n "${gold}Enabling Apache module ${magenta}[mpm_prefork]${default}"
 ## Create virtual host file for project
 
 echo -n "${gold}Creating Virualhost file for project${default}"
+
+touch /etc/apache2/sites-available/default.conf
 cat <<EOF > /etc/apache2/sites-available/default.conf
 <VirtualHost *:80>
         DocumentRoot /var/www/html/public/

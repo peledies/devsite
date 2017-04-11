@@ -23,7 +23,7 @@ configure_generic() {
       * ) echo "Please select a valid option.";;
     esac
   done
-  if [ "$image" == "xenial" ]
+  if [ "$version" == "xenial" ]
   then
     use_image='config.vm.box = "ubuntu/xenial64"'
   else
