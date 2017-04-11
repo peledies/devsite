@@ -17,7 +17,7 @@ init_opencart_site() {
 }
 
 init_laravel_app() {
-  source $SCRIPTPATH/install_laravel.sh $project
+  source $SCRIPTPATH/install_laravel.sh $project $port
 }
 
 build_docker_containers(){
