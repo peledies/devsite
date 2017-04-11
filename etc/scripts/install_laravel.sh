@@ -37,8 +37,7 @@ fi
     use_image='config.vm.box = "kacomp_v4"
   config.vm.box_url = "http://dash.sfp.cc/kacomp_v4.box"'
   else 
-    use_image='config.vm.box = "hashicorp/precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"'
+    use_image='config.vm.box = "ubuntu/xenial64"'
   fi
 
 # Clone the current laravel repo
@@ -53,7 +52,7 @@ echo -n "${gold}Moving files from tmp directory${default}"
   mv tmp/* .
 test_for_success $?
 
-# Create new nginx server configuration
+# Create new Vagrantfile configuration
 echo_start
 echo -n "${gold}Creating Vagrant configuration file${default}"
 
