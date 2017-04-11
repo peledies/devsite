@@ -86,7 +86,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     /etc/init.d/httpd restart
 SCRIPT
   config.vm.provision "shell",
-   inline: $bashlaunch
+   inline: \$bashlaunch
 
 end
 EOF
