@@ -89,16 +89,7 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ${use_image}
   
-  config.vm.synced_folder "./public", "/var/www/html/public_html"
-  config.vm.synced_folder "./app", "/var/www/html/app"
-  config.vm.synced_folder "./bootstrap", "/var/www/html/bootstrap"
-  config.vm.synced_folder "./config", "/var/www/html/config"
-  config.vm.synced_folder "./database", "/var/www/html/database"
-  config.vm.synced_folder "./resources", "/var/www/html/resources"
-  config.vm.synced_folder "./routes", "/var/www/html/routes"
-  config.vm.synced_folder "./storage", "/var/www/html/storage"
-  config.vm.synced_folder "./vendor", "/var/www/html/vendor"
-  config.vm.synced_folder "./etc", "/var/www/html/"
+  config.vm.synced_folder "./", "/var/www/html/"
 
   config.vm.network :forwarded_port, host: ${port}, guest: 80
   config.vm.provision :shell, :path => "./etc/scripts/bootstrap_laravel_generic.sh"

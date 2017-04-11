@@ -53,8 +53,3 @@ sudo a2ensite default
 
 echo -n "${gold}Restart Apache${default}"
   sudo service apache2 restart > /dev/null 2>&1
-
-# Disable sendfile
-cp /etc/httpd/conf/httpd.conf /tmp/httptmp
-sed -e "s/#EnableSendfile off/EnableSendfile off/" /tmp/httptmp
-cat /tmp/httptmp > /etc/httpd/conf/httpd.conf                                            
