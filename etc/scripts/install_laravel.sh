@@ -4,7 +4,6 @@ pushd $(dirname $0) > /dev/null; SCRIPTPATH=$(pwd); popd > /dev/null
 INITDIR=`pwd`
 
 project=$1
-port=$2
 
 source $SCRIPTPATH/assets/info_box.sh
 source $SCRIPTPATH/assets/pretty_tasks.sh

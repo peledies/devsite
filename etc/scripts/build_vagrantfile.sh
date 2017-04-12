@@ -1,5 +1,7 @@
-read -p "What local port should Vagrant Map to its port 80: [default 8000]${gold} " port
-port=${port:-8000}
+read -p "${cyan}What local port should Vagrant Map to its port ${red}80${cyan}: [default 8000]${gold} " port
+http_port=${port:-8000}
+read -p "${cyan}What local port should Vagrant Map to its port ${red}3306${cyan}: [default 3307]${gold} " port
+mysql_port=${port:-3307}
 
 configure_sfp() {
   use_image='config.vm.box = "kacomp_v4"
@@ -89,8 +91,13 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ${use_image}
   
-  config.vm.network :forwarded_port, host: ${port}, guest: 80
-  config.vm.provision :shell, :path => "./etc/scripts/bootstrap_laravel_generic.sh ${project}"
+  config.vm.network :forwarded_port, host: ${http_port}, guest: 80
+  config.vm.network :forwarded_port, host: ${mysql_port}, guest: 3306
+
+  config.vm.provision "shell" do |s|
+    s.path = "./etc/scripts/bootstrap_laravel_generic.sh"
+    s.args   = "${project}"
+  end
 end
 EOF
 test_for_success $?
