@@ -27,13 +27,6 @@ test_for_success $?
 
 # Move files from tmp directory
 echo_start
-echo -n "${gold}Updating storage and cache permissions${default}"
-  chmod -R 777 storage
-  chmod -R 777 bootstrap/cache
-test_for_success $?
-
-# Move files from tmp directory
-echo_start
 echo -n "${gold}Creating Environment file and APP KEY${default}"
   echo "APP_KEY=" > .env
   php artisan key:generate > /dev/null 2>&1
@@ -46,6 +39,13 @@ echo -n "${gold}Removing tmp directory${default}"
 test_for_success $?
 
 source $SCRIPTPATH/build_vagrantfile.sh
+
+# Update permissions
+echo_start
+echo -n "${gold}Updating storage and cache permissions${default}"
+  chmod -R 777 $INITDIR/storage
+  chmod -R 777 $INITDIR/bootstrap/cache
+test_for_success $?
 
 # Start Vagrant
 vagrant up

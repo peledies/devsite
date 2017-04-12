@@ -60,7 +60,3 @@ sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
 
 echo -e "\n--- Restarting Apache ---\n"
 service apache2 restart >> /vagrant/vm_build.log 2>&1
-
-echo -e "\n--- Updating Storage Permissions ---\n"
-chmod -R 777 storage 
-chmod -R 777 bootstrap/cache 
