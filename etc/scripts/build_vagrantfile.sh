@@ -89,10 +89,8 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ${use_image}
   
-  config.vm.synced_folder "./", "/var/www/html/"
-
   config.vm.network :forwarded_port, host: ${port}, guest: 80
-  config.vm.provision :shell, :path => "./etc/scripts/bootstrap_laravel_generic.sh"
+  config.vm.provision :shell, :path => "./etc/scripts/bootstrap_laravel_generic.sh ${project}"
 end
 EOF
 test_for_success $?

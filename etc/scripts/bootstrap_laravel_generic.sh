@@ -1,55 +1,58 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
+###
+#
+# install_mysql.sh
+#
+# This script assumes your Vagrantfile has been configured to map the root of
+# your application to /vagrant and that your web root is the "public" folder
+# (Laravel standard).  Standard and error output is sent to
+# /vagrant/vm_build.log during provisioning.
+#
+###
 
-echo -n "${gold}Updating Aptitude package list${default}"
-  apt update > /dev/null 2>&1
+# Variables
+DBHOST=localhost
+DBNAME=$1
+DBUSER=$1
+DBPASSWD=SECRET
 
+echo -e "\n--- Updating packages list ---\n"
+apt-get -qq update
 
-## Install dependencies for laravel
+echo -e "\n--- Install base packages ---\n"
+apt-get -y install build-essential python-software-properties >> /vagrant/vm_build.log 2>&1
 
-echo -n "${gold}Installing laravel server dependencies ${magenta}[PHP]${default}"
-  apt install php php-curl php7.0-mysql php-mcrypt php-gd php-mbstring php7.0-zip php-simplexml -y > /dev/null 2>&1
+echo -e "\n--- Updating packages list ---\n"
+apt-get -qq update
 
+# MySQL setup for development purposes ONLY
+echo -e "\n--- Install MySQL specific packages and settings ---\n"
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD"
 
-echo -n "${gold}Installing laravel server dependencies ${magenta}[Apache]${default}"
-  apt install apache2 libapache2-mod-php -y > /dev/null 2>&1
+apt-get -y install mysql-server >> /vagrant/vm_build.log 2>&1
 
+echo -e "\n--- Setting up our MySQL user and db ---\n"
+mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
+mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'" > /vagrant/vm_build.log 2>&1
 
-## Enable apache modules
+echo -e "\n--- Installing PHP-specific packages ---\n"
+apt-get -y install php apache2 libapache2-mod-php php-curl php-gd php-mysql php-gettext >> /vagrant/vm_build.log 2>&1
 
-echo -n "${gold}Enabling Apache module ${magenta}[rewrite]${default}"
-  sudo a2enmod rewrite > /dev/null 2>&1
+echo -e "\n--- Enabling mod-rewrite ---\n"
+a2enmod rewrite >> /vagrant/vm_build.log 2>&1
 
-echo -n "${gold}Enabling Apache module ${magenta}[php7.0]${default}"
-  sudo a2enmod php7.0 > /dev/null 2>&1
+echo -e "\n--- Allowing Apache override to all ---\n"
+sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
 
-echo -n "${gold}Disabling Apache module ${magenta}[mpm_event]${default}"
-  sudo a2dismod mpm_event > /dev/null 2>&1
+echo -e "\n--- Setting document root to public directory ---\n"
+rm -rf /var/www/html
+ln -fs /vagrant/public /var/www/html
 
-echo -n "${gold}Enabling Apache module ${magenta}[mpm_prefork]${default}"
-  sudo a2enmod mpm_prefork > /dev/null 2>&1
+echo -e "\n--- We definitly need to see the PHP errors, turning them on ---\n"
+sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
+sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
 
-
-
-## Create virtual host file for project
-
-echo -n "${gold}Creating Virualhost file for project${default}"
-
-touch /etc/apache2/sites-available/default.conf
-cat <<EOF > /etc/apache2/sites-available/default.conf
-<VirtualHost *:80>
-        DocumentRoot /var/www/html/public/
-        <Directory /var/www/html/>
-                Options FollowSymLinks
-                AllowOverride All
-                Require all granted
-        </Directory>
-</VirtualHost>
-EOF
-
-
-sudo a2ensite default
-## Restart apache
-
-echo -n "${gold}Restart Apache${default}"
-  sudo service apache2 restart > /dev/null 2>&1
+echo -e "\n--- Restarting Apache ---\n"
+service apache2 restart >> /vagrant/vm_build.log 2>&1
