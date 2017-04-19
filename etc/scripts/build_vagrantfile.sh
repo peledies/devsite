@@ -47,29 +47,16 @@ cat <<EOF > $INITDIR/Vagrantfile
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  ${use_image}
-  config.vm.network :forwarded_port, guest: 80, host: ${port}
+  
+  $use_image
 
-  config.vm.synced_folder "./public", "/home/fujita/public_html"
-  config.vm.synced_folder "./app", "/home/fujita/app"
-  config.vm.synced_folder "./bootstrap", "/home/fujita/bootstrap"
-  config.vm.synced_folder "./config", "/home/fujita/config"
-  config.vm.synced_folder "./database", "/home/fujita/database"
-  config.vm.synced_folder "./resources", "/home/fujita/resources"
-  config.vm.synced_folder "./routes", "/home/fujita/routes"
-  config.vm.synced_folder "./storage", "/home/fujita/storage"
-  config.vm.synced_folder "./vendor", "/home/fujita/vendor"
-  config.vm.synced_folder "./etc", "/home/fujita/"
+  config.vm.network :forwarded_port, guest: 80, host: $port
 
-\$bashlaunch = <<SCRIPT
-    cp /etc/httpd/conf/httpd.conf /tmp/httptmp
-    sed -e "s/#EnableSendfile off/EnableSendfile off/" /tmp/httptmp
-    cat /tmp/httptmp > /etc/httpd/conf/httpd.conf
-    mkdir /home/fujita/public_html
-    /etc/init.d/httpd restart
-SCRIPT
-  config.vm.provision "shell",
-   inline: \$bashlaunch
+  config.vm.synced_folder "./", "/home/fujita", owner: "vagrant", group: "vagrant", mount_options: ["dmode=777", "fmode=777"]
+
+  config.vm.provision "shell", run: "always", inline: "echo '\n--- Creating public -> public_html symlink ---\n' && ln -sf /home/fujita/public /home/fujita/public_html"
+  config.vm.provision "shell", run: "always", inline: "echo '\n--- Disabling Sendfile ---\n' && sed -i \"s/#EnableSendfile off/EnableSendfile off/\" /etc/httpd/conf/httpd.conf"
+  config.vm.provision "shell", run: "always", inline: "echo '\n--- Restarting Apache ---\n' && /etc/init.d/httpd restart"
 
 end
 EOF
