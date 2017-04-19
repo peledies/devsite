@@ -40,12 +40,5 @@ test_for_success $?
 
 source $SCRIPTPATH/build_vagrantfile.sh
 
-# Update permissions
-echo_start
-echo -n "${gold}Updating storage and cache permissions${default}"
-  chmod -R 777 $INITDIR/storage
-  chmod -R 777 $INITDIR/bootstrap/cache
-test_for_success $?
-
 # Start Vagrant
 vagrant up
