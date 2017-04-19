@@ -35,7 +35,7 @@ apt-get -y install mysql-server >> /vagrant/vm_build.log 2>&1
 
 echo -e "\n--- Setting up our MySQL user and db ---\n"
 mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
-mysql -uroot -p$DBPASSWD -e "grant all privileges on *.* to '$DBUSER'@'%' identified by '$DBPASSWD'" > /vagrant/vm_build.log 2>&1
+mysql -uroot -p$DBPASSWD -e "grant all privileges on *.* to '$DBUSER'@'%' identified by '$DBPASSWD'" >> /vagrant/vm_build.log 2>&1
 sed -i '/skip-external-locking/s/^/#/' /etc/mysql/mysql.conf.d/mysqld.cnf
 sed -i '/bind-address/s/^/#/' /etc/mysql/mysql.conf.d/mysqld.cnf
 
@@ -50,13 +50,15 @@ a2enmod rewrite >> /vagrant/vm_build.log 2>&1
 echo -e "\n--- Allowing Apache override to all ---\n"
 sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
 
-echo -e "\n--- Setting document root to public directory ---\n"
-rm -rf /var/www/html
-ln -fs /vagrant/public /var/www/html
-
 echo -e "\n--- We definitly need to see the PHP errors, turning them on ---\n"
 sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
 sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
+
+echo -e "\n--- Removing Ubuntu's default landing page ---\n"
+rm /var/www/html/index.html
+
+echo -e "\n--- Updating webroot to /var/www/html/public ---\n"
+sed -i s/.*Document.*/"DocumentRoot \/var\/www\/html\/public"/g /etc/apache2/sites-available/000-default.conf 
 
 echo -e "\n--- Restarting Apache ---\n"
 service apache2 restart >> /vagrant/vm_build.log 2>&1
