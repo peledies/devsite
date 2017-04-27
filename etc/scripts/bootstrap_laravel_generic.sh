@@ -44,7 +44,7 @@ sed -i '/bind-address/s/^/#/' /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo service mysql restart >> $vagrant_build_log 2>&1
 
 echo -e "\n--- Installing PHP-specific packages ---\n"
-apt-get -y install php apache2 libapache2-mod-php php-curl php-gd php-mysql php-gettext >> $vagrant_build_log 2>&1
+apt-get -y install php apache2 php-mbstring libapache2-mod-php php-curl php-gd php-mysql php-gettext >> $vagrant_build_log 2>&1
 
 echo -e "\n--- Enabling mod-rewrite ---\n"
 a2enmod rewrite >> $vagrant_build_log 2>&1
@@ -67,6 +67,9 @@ mv /var/www/html/tmp/* /var/www/html
 
 echo -e "\n--- Removing tmp direcory ---\n"
 rm -rf /var/www/html/tmp
+
+echo -e "\n--- Composer Installing Dependencies [ Be Patient ] ---\n"
+composer install
 
 echo -e "\n--- Generating App key for Laravel App ---\n"
 cd /var/www/
