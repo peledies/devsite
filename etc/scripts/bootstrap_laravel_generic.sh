@@ -17,7 +17,8 @@ DBNAME=$1
 DBUSER=$1
 DBPASSWD=SECRET
 
-vagrant_build_log=/var/www/vm_build.log
+vagrant_build_log=/var/www/html/vm_build.log
+laravel_setup_=/var/www/html/loglaravel_setup.log
 
 echo -e "\n--- Updating packages list ---\n"
 apt-get -qq update
@@ -60,7 +61,7 @@ echo -e "\n--- Removing Ubuntu's default landing page ---\n"
 rm /var/www/html/index.html
 
 echo -e "\n--- Creating Laravel project with Composer [ Be Patient ] ---\n"
-composer create-project --prefer-dist laravel/laravel /var/www/html/tmp/ > /dev/null 2>&1
+composer create-project --prefer-dist laravel/laravel /var/www/html/tmp/ >> $laravel_setup_log 2>&1
 
 echo -e "\n--- Moving files from tmp directory ---\n"
 mv /var/www/html/tmp/* /var/www/html
@@ -69,12 +70,12 @@ echo -e "\n--- Removing tmp direcory ---\n"
 rm -rf /var/www/html/tmp
 
 echo -e "\n--- Composer Installing Dependencies [ Be Patient ] ---\n"
-composer install
+composer install >> $laravel_setup_log 2>&1
 
 echo -e "\n--- Generating App key for Laravel App ---\n"
 cd /var/www/
 echo "APP_KEY=" > .env
-php artisan key:generate > /dev/null 2>&1
+php artisan key:generate >> $laravel_setup_log 2>&1
 
 echo -e "\n--- Updating webroot to /var/www/html/public ---\n"
 sed -i s/.*Document.*/"DocumentRoot \/var\/www\/html\/public"/g /etc/apache2/sites-available/000-default.conf 
