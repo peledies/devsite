@@ -18,7 +18,7 @@ DBUSER=$1
 DBPASSWD=SECRET
 
 vagrant_build_log=/var/www/html/vm_build.log
-laravel_setup_=/var/www/html/loglaravel_setup.log
+laravel_setup_log=/var/www/html/loglaravel_setup.log
 
 echo -e "\n--- Updating packages list ---\n"
 apt-get -qq update
