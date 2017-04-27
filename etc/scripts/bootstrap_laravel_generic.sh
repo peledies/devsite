@@ -7,7 +7,7 @@
 # This script assumes your Vagrantfile has been configured to map the root of
 # your application to /vagrant and that your web root is the "public" folder
 # (Laravel standard).  Standard and error output is sent to
-# /vagrant/vm_build.log during provisioning.
+# $vagrant_build_log during provisioning.
 #
 ###
 
@@ -17,11 +17,13 @@ DBNAME=$1
 DBUSER=$1
 DBPASSWD=SECRET
 
+vagrant_build_log=/var/www/vm_build.log
+
 echo -e "\n--- Updating packages list ---\n"
 apt-get -qq update
 
 echo -e "\n--- Install base packages ---\n"
-apt-get -y install build-essential python-software-properties >> /vagrant/vm_build.log 2>&1
+apt-get -y install build-essential python-software-properties >> $vagrant_build_log 2>&1
 
 echo -e "\n--- Updating packages list ---\n"
 apt-get -qq update
@@ -31,21 +33,21 @@ echo -e "\n--- Install MySQL specific packages and settings ---\n"
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD"
 
-apt-get -y install mysql-server >> /vagrant/vm_build.log 2>&1
+apt-get -y install mysql-server >> $vagrant_build_log 2>&1
 
 echo -e "\n--- Setting up our MySQL user and db ---\n"
-mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
-mysql -uroot -p$DBPASSWD -e "grant all privileges on *.* to '$DBUSER'@'%' identified by '$DBPASSWD'" >> /vagrant/vm_build.log 2>&1
+mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> $vagrant_build_log 2>&1
+mysql -uroot -p$DBPASSWD -e "grant all privileges on *.* to '$DBUSER'@'%' identified by '$DBPASSWD'" >> $vagrant_build_log 2>&1
 sed -i '/skip-external-locking/s/^/#/' /etc/mysql/mysql.conf.d/mysqld.cnf
 sed -i '/bind-address/s/^/#/' /etc/mysql/mysql.conf.d/mysqld.cnf
 
-sudo service mysql restart >> /vagrant/vm_build.log 2>&1
+sudo service mysql restart >> $vagrant_build_log 2>&1
 
 echo -e "\n--- Installing PHP-specific packages ---\n"
-apt-get -y install php apache2 libapache2-mod-php php-curl php-gd php-mysql php-gettext >> /vagrant/vm_build.log 2>&1
+apt-get -y install php apache2 libapache2-mod-php php-curl php-gd php-mysql php-gettext >> $vagrant_build_log 2>&1
 
 echo -e "\n--- Enabling mod-rewrite ---\n"
-a2enmod rewrite >> /vagrant/vm_build.log 2>&1
+a2enmod rewrite >> $vagrant_build_log 2>&1
 
 echo -e "\n--- Allowing Apache override to all ---\n"
 sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
@@ -61,4 +63,4 @@ echo -e "\n--- Updating webroot to /var/www/html/public ---\n"
 sed -i s/.*Document.*/"DocumentRoot \/var\/www\/html\/public"/g /etc/apache2/sites-available/000-default.conf 
 
 echo -e "\n--- Restarting Apache ---\n"
-service apache2 restart >> /vagrant/vm_build.log 2>&1
+service apache2 restart >> $vagrant_build_log 2>&1
