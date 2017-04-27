@@ -18,7 +18,7 @@ DBUSER=$1
 DBPASSWD=SECRET
 
 vagrant_build_log=/var/www/html/vm_build.log
-laravel_setup_log=/var/www/html/loglaravel_setup.log
+laravel_setup_log=/var/www/html/laravel_setup.log
 
 echo -e "\n--- Updating packages list ---\n"
 apt-get -qq update
@@ -60,7 +60,7 @@ sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
 echo -e "\n--- Removing Ubuntu's default landing page ---\n"
 rm /var/www/html/index.html
 
-echo -e "\n--- Creating Laravel project with Composer [ Be Patient ] ---\n"
+echo -e "\n--- Creating Laravel project with Composer [ Be Patient ] You can tail -f laravel_setup.log for details ---\n"
 composer create-project --prefer-dist laravel/laravel /var/www/html/tmp/ >> $laravel_setup_log 2>&1
 
 echo -e "\n--- Moving files from tmp directory ---\n"
@@ -69,7 +69,7 @@ mv /var/www/html/tmp/* /var/www/html
 echo -e "\n--- Removing tmp direcory ---\n"
 rm -rf /var/www/html/tmp
 
-echo -e "\n--- Composer Installing Dependencies [ Be Patient ] ---\n"
+echo -e "\n--- Composer Installing Dependencies [ Be Patient ] You can tail -f laravel_setup.log for details ---\n"
 composer install >> $laravel_setup_log 2>&1
 
 echo -e "\n--- Generating App key for Laravel App ---\n"
