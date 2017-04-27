@@ -23,7 +23,7 @@ echo -e "\n--- Updating packages list ---\n"
 apt-get -qq update
 
 echo -e "\n--- Install base packages ---\n"
-apt-get -y install build-essential python-software-properties >> $vagrant_build_log 2>&1
+apt-get -y install composer build-essential python-software-properties >> $vagrant_build_log 2>&1
 
 echo -e "\n--- Updating packages list ---\n"
 apt-get -qq update
@@ -59,8 +59,14 @@ sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
 echo -e "\n--- Removing Ubuntu's default landing page ---\n"
 rm /var/www/html/index.html
 
-echo -e "\n--- Creating Magento project with Composer [ Be Patient ] you can tail magento_setup.log for status ---\n"
-composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition /var/www/html/ >> /vagrant/magento_setup.log 2>&1
+echo -e "\n--- Creating Laravel project with Composer [ Be Patient ] ---\n"
+composer create-project --prefer-dist laravel/laravel /var/www/html/tmp/ > /dev/null 2>&1
+
+echo -e "\n--- Moving files from tmp directory ---\n"
+mv /var/www/html/tmp/* /var/www/html
+
+echo -e "\n--- Removing tmp direcory ---\n"
+rm -rf /var/www/html/tmp
 
 echo -e "\n--- Generating App key for Laravel App ---\n"
 cd /var/www/
