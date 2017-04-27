@@ -59,6 +59,14 @@ sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
 echo -e "\n--- Removing Ubuntu's default landing page ---\n"
 rm /var/www/html/index.html
 
+echo -e "\n--- Creating Magento project with Composer [ Be Patient ] you can tail magento_setup.log for status ---\n"
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition /var/www/html/ >> /vagrant/magento_setup.log 2>&1
+
+echo -e "\n--- Generating App key for Laravel App ---\n"
+cd /var/www/
+echo "APP_KEY=" > .env
+php artisan key:generate > /dev/null 2>&1
+
 echo -e "\n--- Updating webroot to /var/www/html/public ---\n"
 sed -i s/.*Document.*/"DocumentRoot \/var\/www\/html\/public"/g /etc/apache2/sites-available/000-default.conf 
 
