@@ -24,11 +24,19 @@ build_docker_containers(){
   docker-compose build
 }
 
+clear
+
 # Ask the user for the existing project they want to add
 info_box "New Project Setup"
 
-read -p "What is the project name: ${gold}" project
-echo "${default}"
+if [ -z "$1" ];then
+  read -p "What is the project name: ${gold}" project
+  echo "${default}"
+else
+  project=$1
+fi
+
+
 
 _menu () {
   echo "${green}  Choose an Option"
