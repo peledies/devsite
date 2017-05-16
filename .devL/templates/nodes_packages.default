@@ -1,0 +1,37 @@
+*   TODO: BREAK INTO CATEGORIES 
+*   imagemin
+*   sass -> sourcemaps
+*   postcss (with postcss-copy and postcss-import)
+*   browser-sync
+*   notify
+*   bower | requirejs | webpack
+*   minify-html minify-css uglify (js)
+*   gulp-rename
+*   gulp-header
+*   runners/tests: mocha, karma, selenium, webdriverio
+*
+
+{
+  "name": "beep",
+  "version": "0.1.0",
+  "author": "SFP",
+  "private": true,
+  "devDependencies": {
+    "bootstrap ": "*",
+    "font-awesome": "*",
+    "gulp": "^3.9.1"
+  },
+  "dependencies": {
+    "gulp": "*",
+    "gulp-load-plugins": "*",
+    "gulp-concat": "*",
+    "gulp-rename": "*",
+    "gulp-uglify": "*",
+    "gulp-sass": "*",
+    "gulp-cssnano": "*",
+    "gulp-autoprefixer": "*",
+    "gulp-htmlmin": "*",
+    "jquery": "*",
+    "gulp-replace": "*"
+  }
+}
