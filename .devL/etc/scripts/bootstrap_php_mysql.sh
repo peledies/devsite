@@ -93,8 +93,7 @@ cd /var/www/
 #php artisan key:generate >> $laravel_setup_log 2>&1
 
 echo -e "\n--- Updating webroot to /var/www/html/public ---\n"
-sed -i s/.*Document.*/"DocumentRoot \/var\/www\/html\/public"/g /etc/apache2/sites-available/000-default.conf 
+sed -i s/.*Document.*/"DocumentRoot \/var\/www\/html\/public"/g /etc/apache2/sites-available/000-default.conf
 
 echo -e "\n--- Restarting Apache ---\n"
 service apache2 restart >> $vagrant_build_log 2>&1
-

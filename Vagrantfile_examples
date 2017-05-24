@@ -1,0 +1,56 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  # SFP V1 BOX
+  # CentOS release 6.6 (Final
+  # PHP 5.6.4 (cli) (built: Dec 17 2014 16:47:40)
+  # mysql  Ver 14.14 Distrib 5.5.41, for Linux (x86_64) using readline 5.1
+  # Server version: Apache/2.2.15 (Unix)
+  # Server built:   Oct 16 2014 14:48:21
+  ####################
+  # BOX CONFIG       #
+  ####################
+
+  config.vm.box = "sfp_v1"
+  config.vm.box_url = "http://dash.sfp.cc/sfp_v1.box"
+  
+  config.vm.define :klsecurity_devL do |klsecurity_devL|
+    end
+
+  config.vm.network :forwarded_port,  host: 8008, guest: 80
+  config.vm.network :forwarded_port, host: 33068, guest: 3306
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
+
+  config.vm.synced_folder "./", "/home/fujita", owner: "vagrant", group: "vagrant", mount_options: ["dmode=777", "fmode=777"]
+  config.vm.synced_folder "./public_html", "/home/fujita/public_html", owner: "vagrant", group: "vagrant", mount_options: ["dmode=777", "fmode=777"]
+  config.vm.synced_folder "./sql", "/home/fujita/sql", owner: "vagrant", group: "vagrant", mount_options: ["dmode=777", "fmode=777"]
+
+  ####################
+  # PROVISIONERS     #
+  ####################
+  
+  config.vm.provision "shell", run: "always", inline: "echo '\n--- Creating public -> public_html symlink ---\n' && ln -sf /home/fujita/public /home/fujita/public_html"
+  config.vm.provision "shell", run: "always", inline: "echo '\n--- Disabling Sendfile ---\n' && sed -i \"s/#EnableSendfile off/EnableSendfile off/\" /etc/httpd/conf/httpd.conf"
+  config.vm.provision "shell", run: "always", inline: "echo '\n--- Restarting Apache ---\n' && /etc/init.d/httpd restart"
+
+  # PROVISION APACHE PHP AND MYSQL ON UBUNTU BOX
+  # config.vm.provision "shell" do |s|
+  #    s.path = ".devL/etc/scripts/bootstrap_php_mysql.sh"
+  #    s.args   = "klsecurity_devL"
+  #  end
+  
+  # WHAT TO DO WITH THE DATABASE
+   config.vm.provision "shell" do |s|
+      s.path = ".devL/etc/scripts/db_autoload.sh"
+      s.args  = "reset"
+    end
+
+end
