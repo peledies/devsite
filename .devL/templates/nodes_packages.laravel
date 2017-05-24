@@ -1,0 +1,24 @@
+{
+  "name": "beep",
+  "version": "0.1.0",
+  "author": "SFP",
+  "private": true,
+  "devDependencies": {
+    "bootstrap ": "*",
+    "font-awesome": "*",
+    "gulp": "^3.9.1"
+  },
+  "dependencies": {
+    "gulp": "*",
+    "gulp-load-plugins": "*",
+    "gulp-concat": "*",
+    "gulp-rename": "*",
+    "gulp-uglify": "*",
+    "gulp-sass": "*",
+    "gulp-cssnano": "*",
+    "gulp-autoprefixer": "*",
+    "gulp-htmlmin": "*",
+    "jquery": "*",
+    "gulp-replace": "*"
+  }
+}

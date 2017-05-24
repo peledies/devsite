@@ -2,7 +2,7 @@ server {
   listen 80;
   server_name $project.local;
   index index.php;
-  root /var/www/html/public;
+  root /var/www/html/public_html;
 
   location / {
     try_files \$uri /index.php\$is_args\$args;

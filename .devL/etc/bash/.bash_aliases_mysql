@@ -1,0 +1,19 @@
+##########################################
+## ALIAS LIST FOR VAGRANT MYSQL COMMANDS #
+##########################################
+
+# DUMP WORKING COPY
+alias export_db = "pname=PROJECT_NAME ; tstamp=$(date -d today +%y.%m.%d.%H%I%M%S) ; fname=$pname.$tstamp.sql ; dbpass=SECRET ; dbpath=/var/www/html/site_data/db_export ; mysqldump -udevL_per -pSECRETS $pname > $dbpath$fname"
+
+# FIST IMPORT WITH CREATE / DROP IF EXISTS
+alias import_db = "mysql -udevL_per -pSECRETS < ~/site_date/db_source/$(get_the_latest.sql)"
+
+#SET DB_SOURCE TO CURRENT LATEST DB EXPORT
+#alias update_db_source = ""
+
+# A LITTLE SMARTER IMPORT / UPDATE DON'T DROP EVERYTHING
+#alias update_db = "" // TAKE NEWEST FILE FROM DB SOURCE FOLDER 
+
+
+# NUKE IT, RESET TO LATEST DB_SOURCE
+#alias reset_db_dev = "" // DROP TABLES , GET LATEST FILE FROM EXPORT_DB FOLDER

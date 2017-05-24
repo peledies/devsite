@@ -1,0 +1,176 @@
+var gulp            = require('gulp'),
+    gulpLoadPlugins = require('gulp-load-plugins'),
+ //   browserSync     = require('browser-sync').create(),
+    plugins         = gulpLoadPlugins(),
+
+    proRoot         = '../public_html/skin/frontend/sfp/default/assets/',
+    nodeRoot        = '../sources/node_modules/',
+    sourceRoot      = '../sources/',
+
+    sourceScripts   = sourceRoot+'scripts/',
+    // sourceHTML      = sourceRoot+'html/',
+    sourceStyles    = sourceRoot+'css/',
+    sourceImg       = sourceRoot+'images/',
+
+    // htmlOptions     = { conditionals: true, spare: true },
+
+    paths           = {
+                        /************
+                        * JS
+                        ************/
+                        dev_scripts:
+                        [
+                            // sourceScripts+'jquery-ui.js',
+                            // sourceScripts+'touchpunch.js',
+                            // nodeRoot+'jquery/dist/jquery.min.js',
+                            // nodeRoot+'malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js',
+                            nodeRoot+'slick-carousel/slick/slick.js',
+                            // nodeRoot+'gridstack/src/gridstack.js',
+                            // nodeRoot+'sweetalert2/src/sweetalert2.js',
+                            sourceScripts+'lib.js',
+                            sourceScripts+'app.js',
+                            sourceScripts+'functions.js',
+                            sourceScripts+'scripts_top.js',
+                            '../public_html/js/lib/d3.v3.min.js',
+                            '../public_html/skin/frontend/sfp/color-picker/color-picker.js',
+                            '../public_html/app/design/frontend/sfp/default/template/page/SFP/design-wall/design-wall.js'
+                        ],
+                        pro_scripts: proRoot+'scripts',
+
+                        /************
+                        * CSS
+                        ************/
+                        dev_css:
+                        [
+                            nodeRoot+'font-awesome/css/font-awesome.min.css',
+                            // nodeRoot+'malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css',
+                            nodeRoot+'slick-carousel/slick/slick.scss',
+                            nodeRoot+'slick-carousel/slick/slick-theme.scss',
+                            // nodeRoot+'gridstack/src/gridstack.scss',
+                            // nodeRoot+'sweetalert2/src/sweetalert2.scss',
+                            sourceStyles+'fonts.scss',
+                            sourceStyles+'mixins.scss',
+
+                            // Homebase CSS
+                            sourceStyles+'reset.scss',
+                            sourceStyles+'grid.scss',
+
+                            // NPM Bootsrap CSS
+                            /* nodeRoot+'bootstrap/dist/css/bootstrap.min.css', */
+
+                            sourceStyles+'animate.scss',
+                            sourceStyles+'fx.scss',
+                            sourceStyles+'hide-n-seek.scss',
+                            sourceStyles+'styles-rwd.scss',
+                            sourceStyles+'madisonisland.scss',
+                            sourceStyles+'style.scss',
+                            sourceStyles+'shop.scss',
+                            sourceStyles+'interact.scss',
+                            sourceStyles+'media.scss',
+                            '../public_html/skin/frontend/sfp/color-picker/color-picker.css',
+                            '../public_html/app/design/frontend/sfp/default/template/page/SFP/design-wall/design-wall.scss'
+                        ],
+                        pro_css: proRoot+'css',
+
+                        /************
+                        * HTML: The paths below correlate with a Laravel install
+                        ************/
+                        // dev_html_includes: sourceHTML+'includes/*',
+                        // pro_html_includes: proRoot+'includes',
+                        //
+                        // dev_html_partials: sourceHTML+'partials/*',
+                        // pro_html_partials: 'resources/views/partials/',
+                        //
+                        // dev_html_app: sourceHTML+'app.php',
+                        // pro_html_app: 'resources/views/',
+
+                        /************
+                        * FONTS
+                        ************/
+                        dev_fonts:
+                        [
+                            // nodeRoot+'bootstrap/fonts/*',
+                            nodeRoot+'font-awesome/fonts/*'
+                        ],
+                        pro_fonts: proRoot+'fonts',
+
+                        /***  MAKE SURE YOUR COMMAS ARE CORRECT  ***/
+                      };
+
+gulp.task('js', function(){
+    return gulp.src(paths.dev_scripts)
+        .pipe(plugins.replace('$.', 'jQuery.'))
+        .pipe(plugins.replace('$(', 'jQuery('))
+        .pipe(plugins.concat('master.js'))
+        .pipe(gulp.dest(paths.pro_scripts))
+   //     .pipe(browserSync.reload({stream: true}))
+        .pipe(plugins.rename('master.min.js'))
+        .pipe(plugins.uglify())
+        .pipe(gulp.dest(paths.pro_scripts));
+});
+
+gulp.task('css', function(){
+    return gulp.src(paths.dev_css)
+        .pipe(plugins.concat('master.css'))
+        .pipe(plugins.sass())
+        .pipe(plugins.autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+        .pipe(gulp.dest(paths.pro_css))
+   //     .pipe(browserSync.reload({stream: true}))
+        .pipe(plugins.rename('master.min.css'))
+        .pipe(plugins.cssnano({discardComments: {removeAll: true}}))
+        .pipe(gulp.dest(paths.pro_css));
+});
+
+gulp.task('serve', function(){
+//    browserSync.init({
+//        proxy: "localhost:8080",
+//    });
+    gulp.watch('../sources/css/*.scss', ['css']);
+    gulp.watch('../sources/scripts/*.js', ['js']);
+    gulp.watch('../app/design/frontend/sfp/default/template/page/SFP/design_wall.phtml').on('change', browserSync.reload);
+});
+
+/************
+** These commands are examples of
+** laravel html minifications
+************/
+// gulp.task('includes', function() {
+//   return gulp.src(paths.dev_html_includes)
+//     .pipe(plugins.htmlmin(htmlOptions))
+//     .pipe(gulp.dest(paths.pro_html_includes));
+// });
+//
+// gulp.task('partials', function() {
+//   return gulp.src(paths.dev_html_partials)
+//     .pipe(plugins.htmlmin(htmlOptions))
+//     .pipe(gulp.dest(paths.pro_html_partials));
+// });
+//
+// gulp.task('app', function() {
+//   return gulp.src(paths.dev_html_app)
+//     .pipe(plugins.htmlmin(htmlOptions))
+//     .pipe(plugins.rename('app.blade.php'))
+//     .pipe(gulp.dest(paths.pro_html_app));
+// });
+//
+// gulp.task('html', function() {
+//     gulp.start('includes', 'partials', 'app');
+// });
+
+gulp.task('fonts', function() {
+    return gulp.src(paths.dev_fonts)
+        .pipe(gulp.dest(paths.pro_fonts));
+});
+
+gulp.task('default', function(){
+    // gulp.start('js', 'css', 'html', 'fonts');
+    gulp.start('js', 'css', 'serve');
+});
+
+gulp.task('watch', function(){
+    gulp.watch(paths.dev_css, ['css']);
+    gulp.watch(paths.dev_scripts, ['js']);
+    // gulp.watch(paths.dev_html_pages, ['includes']);
+    // gulp.watch(paths.dev_html_partials, ['partials']);
+    // gulp.watch(paths.dev_html_app, ['app']);
+});
